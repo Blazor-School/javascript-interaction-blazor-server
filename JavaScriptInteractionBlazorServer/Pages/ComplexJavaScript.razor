@@ -1,0 +1,27 @@
+﻿@page "/complex-example"
+@inject IJSRuntime JSRuntime
+
+<form>
+    <div>
+        <label>Left Hand:<input type="number" @bind-value="LeftHand" /></label>
+    </div>
+    <div>
+        <label>Right Hand:<input type="number" @bind-value="RightHand" /></label>
+    </div>
+    <div>
+        <label>Result: @Result</label>
+    </div>
+    <button type="button" @onclick="Minus">Minus</button>
+</form>
+
+@code {
+    public int LeftHand { get; set; }
+    public int RightHand { get; set; }
+    public int Result { get; set; }
+
+    private async Task Minus()
+    {
+        string encodedURI = await JSRuntime.InvokeAsync<string>("encodeURI", " ");
+        Result = await JSRuntime.InvokeAsync<int>("BlazorUtil.calculator.minus", LeftHand, RightHand);
+    }
+}

@@ -1,0 +1,16 @@
+﻿@inject IJSRuntime JSRuntime
+@page "/simple-example"
+
+<button onclick="alert('Hello world')">HTML5 event Hello world!</button>
+<button @onclick='async () => await JSRuntime.InvokeVoidAsync("alert", "Hello world")'>Blazor event Hello world!</button>
+<button @onclick="EncodeSpace">Encode space</button>
+<div>Encode result: @EncodeResult</div>
+
+@code {
+    public string EncodeResult { get; set; }
+
+    private async Task EncodeSpace()
+    {
+        EncodeResult = await JSRuntime.InvokeAsync<string>("encodeURI", " ");
+    }
+}
