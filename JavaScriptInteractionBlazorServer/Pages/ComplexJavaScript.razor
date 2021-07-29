@@ -21,7 +21,6 @@
 
     private async Task Minus()
     {
-        string encodedURI = await JSRuntime.InvokeAsync<string>("encodeURI", " ");
         Result = await JSRuntime.InvokeAsync<int>("BlazorUtil.calculator.minus", LeftHand, RightHand);
     }
 }

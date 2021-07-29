@@ -1,0 +1,48 @@
+﻿@using System.Threading
+@page "/unpredictable"
+@inject IJSRuntime JSRuntime
+
+<form>
+    <div>
+        <label>
+            Input Factor:
+            <input type="number" @bind-value="InputFactor" />
+        </label>
+        <label>Unpredictable Result: @UnpredictableResult</label>
+    </div>
+    <div>
+        <button type="button" @onclick="ExecuteUnpredictableFunction">Get Unpredictable Result</button>
+        <button type="button" @onclick="ExecuteHangingFunction">Execute Hanging Function</button>
+    </div>
+</form>
+
+@code {
+    public int InputFactor { get; set; } = 1;
+    public dynamic UnpredictableResult { get; set; } = 0;
+
+    private async Task ExecuteUnpredictableFunction()
+    {
+        try
+        {
+            UnpredictableResult = await JSRuntime.InvokeAsync<dynamic>("BlazorUtil.unpredictable.returnValueSometimes", InputFactor) ?? throw new InvalidOperationException();
+        }
+        catch
+        {
+            UnpredictableResult = "Error occured.";
+        }
+    }
+
+    private async Task ExecuteHangingFunction()
+    {
+        CancellationTokenSource source = new CancellationTokenSource(TimeSpan.FromSeconds(InputFactor));
+        CancellationToken token = source.Token;
+        try
+        {
+            UnpredictableResult = await JSRuntime.InvokeAsync<string>("BlazorUtil.unpredictable.hang", cancellationToken: token);
+        }
+        catch
+        {
+            UnpredictableResult = "Time out";
+        }
+    }
+}

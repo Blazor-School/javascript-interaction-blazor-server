@@ -1,0 +1,26 @@
+﻿@page "/dynamic-import"
+@inject IJSRuntime JSRuntime
+
+@if (IsImported is false)
+{
+    <button type="button" @onclick="Import">Import Custom Library</button>
+}
+@if (IsImported)
+{
+    <button type="button" @onclick="HelloWorld">Hello World!</button>
+}
+
+@code {
+    public bool IsImported { get; set; } = false;
+
+    private async Task Import()
+    {
+        await JSRuntime.InvokeVoidAsync("BlazorUtil.import", "./CustomLibrary.js", "CustomLibrary");
+        IsImported = true;
+    }
+
+    private async Task HelloWorld()
+    {
+        await JSRuntime.InvokeVoidAsync("BlazorUtil.customLibrary.helloWorld");
+    }
+}
